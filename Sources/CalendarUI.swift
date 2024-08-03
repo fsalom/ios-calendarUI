@@ -17,6 +17,7 @@ open class CalendarUI: ObservableObject {
         } else {
             self.year = Calendar.current.component(.year, from: Date())
         }
+        self.delegate = delegate
     }
 
     let months: [Date] = {
@@ -68,8 +69,8 @@ open class CalendarUI: ObservableObject {
     }
 
     func display() {
-        delegate.clickOn { <#Day#> in
-            <#code#>
+        delegate?.clickOn { day in
+
         }
     }
 }
