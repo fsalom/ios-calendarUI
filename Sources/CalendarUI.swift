@@ -1,25 +1,16 @@
 import Foundation
 
 open class CalendarUI: ObservableObject {
+    public let delegate: CalendarUIDelegate?
     public enum FirstWeekDay: Int {
         case monday = 2
         case sunday = 1
     }
 
+    private let weekDays = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"]
+    private let weekDaysSingle = ["L", "M", "X", "J", "V", "S", "D"]
     private let firstWeekDay: FirstWeekDay
     private let year: Int
-    public let delegate: CalendarUIDelegate?
-
-    init(firstWeekDay: FirstWeekDay, year: Int? = nil, delegate: CalendarUIDelegate? = nil) {
-        self.firstWeekDay = firstWeekDay
-        if let year {
-            self.year = year
-        } else {
-            self.year = Calendar.current.component(.year, from: Date())
-        }
-        self.delegate = delegate
-    }
-
     let months: [Date] = {
         let calendar = Calendar.current
         let year = calendar.component(.year, from: Date())
@@ -32,18 +23,22 @@ open class CalendarUI: ObservableObject {
         }
         return dates
     }()
-    
-    let weekDays = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"]
-    let weekDaysSingle = ["L", "M", "X", "J", "V", "S", "D"]
 
-    func generateDaysStartingSunday(for month: Date, with firstWeekday: FirstWeekDay) -> [Day] {
+    public init(firstWeekDay: FirstWeekDay, year: Int? = nil, delegate: CalendarUIDelegate? = nil) {
+        self.firstWeekDay = firstWeekDay
+        if let year {
+            self.year = year
+        } else {
+            self.year = Calendar.current.component(.year, from: Date())
+        }
+        self.delegate = delegate
+    }
+
+    func generateDays(for month: Date, with firstWeekday: FirstWeekDay) -> [Day] {
         var calendar = Calendar.current
         calendar.firstWeekday = firstWeekday.rawValue
-        // Range of days of this month
         let range = calendar.range(of: .day, in: .month, for: month)!
-        // First day of month
         let firstOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: month))!
-        // First day of week of first month
         let firstDayOfWeek = calendar.component(.weekday, from: firstOfMonth)
         
         var days: [Day] = []
