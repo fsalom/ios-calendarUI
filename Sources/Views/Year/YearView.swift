@@ -1,16 +1,19 @@
 import SwiftUI
 
-struct YearView: View {
-    private let calendar = CalendarUI(firstWeekDay: .monday, year: 2024)
-
+public struct YearView: View {
+    private let calendar: CalendarUI
     private let columns = Array(repeating: GridItem(.flexible(), alignment: .top), count: 3)
 
-    var body: some View {
+    public init(calendar: CalendarUI) {
+        self.calendar = calendar
+    }
+
+    public var body: some View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 0) {
                 ForEach(calendar.months, id: \.self) { month in
                     MonthView(month: month,
-                              days: calendar.generateDaysStartingSunday(
+                              days: calendar.generateDays(
                                 for: month,
                                 with: .monday),
                               monthName: calendar.monthName(from: month))
@@ -22,6 +25,7 @@ struct YearView: View {
 
 struct YearView_Previews: PreviewProvider {
     static var previews: some View {
-        YearView()
+        let calendar = CalendarUI(firstWeekDay: .monday, year: 2024)
+        YearView(calendar: calendar)
     }
 }
