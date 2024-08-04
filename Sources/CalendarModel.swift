@@ -1,6 +1,6 @@
 import Foundation
 
-open class CalendarUI: ObservableObject {
+open class CalendarModel: ObservableObject {
     public let delegate: CalendarUIDelegate?
     public enum FirstWeekDay: Int {
         case monday = 2
