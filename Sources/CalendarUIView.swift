@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct CalendarUIView: View {
-    var model: CalendarModel
+    @State private var model: CalendarModel
 
     public init(model: CalendarModel) {
         self.model = model
