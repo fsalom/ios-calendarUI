@@ -19,7 +19,7 @@ let package = Package(
             name: "CalendarUI",
             path: "Sources/"),
         .testTarget(
-            name: "calendarUITests",
+            name: "CalendarUITests",
             dependencies: ["CalendarUI"],
             path: "Tests/"),
     ]
