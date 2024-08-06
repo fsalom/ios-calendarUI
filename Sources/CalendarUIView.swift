@@ -8,7 +8,12 @@ public struct CalendarUIView: View {
     }
 
     public var body: some View {
-        YearView(model: model)
+        switch model.type {
+        case .full:
+            FullYearView(model: model)
+        case .calendar:
+            YearView(model: model)
+        }
     }
 }
 
