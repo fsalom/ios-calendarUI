@@ -11,12 +11,8 @@ public struct YearView: View {
     public var body: some View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 0) {
-                ForEach(model.months, id: \.self) { month in
-                    MonthView(month: month,
-                              days: model.generateDays(
-                                for: month,
-                                with: .monday),
-                              monthName: model.monthName(from: month))
+                ForEach(model.months) { month in
+                    MonthView(month: month)
                 }
             }
         }.padding(4)

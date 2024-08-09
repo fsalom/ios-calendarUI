@@ -1,15 +1,13 @@
 import SwiftUI
 
 struct MonthView: View {
-    let month: Date
-    let days: [Day]
-    let monthName: String
+    let month: Month
 
     private let columns = Array(repeating: GridItem(.flexible()), count: 7)
 
     var body: some View {
         VStack(spacing: 0) {
-                Text(monthName)
+            Text(month.name)
                     .font(.footnote)
             /*
                 HStack(spacing: 0) {
@@ -24,7 +22,7 @@ struct MonthView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
              */
                 LazyVGrid(columns: columns, spacing: 0) {
-                    ForEach(days) { day in
+                    ForEach(month.days) { day in
                         DayView(day: day)
                     }
                 }
@@ -34,5 +32,5 @@ struct MonthView: View {
 }
 
 #Preview {
-    MonthView(month: Date(), days: [], monthName: "test")
+    MonthView(month: Month(date: Date(), days: []))
 }
