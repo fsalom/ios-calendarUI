@@ -12,6 +12,9 @@ public struct Day: Identifiable {
         dateComponents.day = self.number
         return calendar.date(from: dateComponents) ?? Date()
     }
+    var isPast: Bool {
+        return date < Date() ? true : false
+    }
 
     init(number: Int, month: Date? = nil, isWithinDisplayedMonth: Bool) {
         self.month = month
