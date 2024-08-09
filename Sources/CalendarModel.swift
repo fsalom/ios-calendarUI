@@ -11,24 +11,15 @@ open class CalendarModel {
         case calendar
         case full
     }
+    public let year: Int
+    public var days: [Day] = []
+
 
     private let weekDays = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"]
     private let weekDaysSingle = ["L", "M", "X", "J", "V", "S", "D"]
     private let firstWeekDay: FirstWeekDay
-    private let year: Int
-    let type: CalendarType
-    let months: [Date] = {
-        let calendar = Calendar.current
-        let year = calendar.component(.year, from: Date())
-        var dates = [Date]()
-        for month in 1...12 {
-            let components = DateComponents(year: year, month: month)
-            if let date = calendar.date(from: components) {
-                dates.append(date)
-            }
-        }
-        return dates
-    }()
+    public let type: CalendarType
+    public var months: [Month] = []
 
     public init(type: CalendarType = .calendar,
                 firstWeekDay: FirstWeekDay = .monday,
@@ -42,9 +33,11 @@ open class CalendarModel {
             self.year = Calendar.current.component(.year, from: Date())
         }
         self.delegate = delegate
+        self.months = self.getMonths()
+        self.days = self.getDays()
     }
 
-    func generateDays(for month: Date, with firstWeekday: FirstWeekDay) -> [Day] {
+    private func generateDays(for month: Date, with firstWeekday: FirstWeekDay) -> [Day] {
         var calendar = Calendar.current
         calendar.firstWeekday = firstWeekday.rawValue
         let range = calendar.range(of: .day, in: .month, for: month)!
@@ -67,23 +60,30 @@ open class CalendarModel {
         return days
     }
 
-    func getDays() -> [Day] {
+    private func getMonths() -> [Month] {
+        let calendar = Calendar.current
+        let year = calendar.component(.year, from: Date())
+        var months = [Month]()
+        for month in 1...12 {
+            let components = DateComponents(year: year, month: month)
+            if let date = calendar.date(from: components) {
+                months.append(Month(date: date, days: generateDays(for: date, with: self.firstWeekDay)))
+            }
+        }
+        return months
+    }
+
+    private func getDays() -> [Day] {
         var days: [Day] = []
         for month in months {
-            var daysOfMonth = generateDays(for: month, with: self.firstWeekDay)
+            var daysOfMonth = month.days
             daysOfMonth.removeAll(where: {$0.number == 0})
             days.append(contentsOf: daysOfMonth)
         }
         return days
     }
 
-    func monthName(from date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMMM"
-        return dateFormatter.string(from: date)
-    }    
-
-    func display() {
+    private func display() {
         delegate?.clickOn { day in
 
         }
