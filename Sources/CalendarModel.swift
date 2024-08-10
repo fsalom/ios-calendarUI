@@ -73,6 +73,39 @@ open class CalendarModel {
         return months
     }
 
+    private func generateWeeks(ofYear year: Int) -> [Week]? {
+        var calendar = Calendar.current
+        calendar.firstWeekday = 2 // Definir el lunes como primer día de la semana (opcional)
+
+        guard let startDate = calendar.date(from: DateComponents(year: year, month: 1, day: 1)),
+              let endDate = calendar.date(from: DateComponents(year: year, month: 12, day: 31)) else {
+            return nil
+        }
+
+        var weeks = [Week]()
+        var currentWeekDays = [Day]()
+
+        var currentDate = startDate
+        while currentDate <= endDate {
+            let day = Day(date: currentDate)
+            currentWeekDays.append(day)
+
+            // Si hemos completado una semana (7 días) o si es el último día del año
+            if currentWeekDays.count == 7 || calendar.isDate(currentDate, inSameDayAs: endDate) {
+                weeks.append(Week(days: currentWeekDays))
+                currentWeekDays = []
+            }
+
+            // Avanzamos al siguiente día
+            guard let nextDate = calendar.date(byAdding: .day, value: 1, to: currentDate) else {
+                break
+            }
+            currentDate = nextDate
+        }
+
+        return weeks
+    }
+
     private func getDays() -> [Day] {
         var days: [Day] = []
         for month in months {
