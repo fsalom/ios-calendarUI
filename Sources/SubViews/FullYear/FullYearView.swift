@@ -17,11 +17,11 @@ public struct FullYearView: View {
 
         ScrollView {
             LazyVGrid(columns: columns, spacing: spacing) {
-                ForEach(model.getDays(), id: \.id) { day in
+                ForEach(model.days, id: \.id) { day in
                     Rectangle()
                         .frame(width: rectangleWidth,
                                height: rectangleHeight)
-                        .foregroundColor(day.date < Date() ? .red : .blue)
+                        .foregroundColor(day.isPast ? .red : .blue)
                 }
             }
             .padding(spacing)
