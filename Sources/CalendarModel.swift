@@ -12,14 +12,15 @@ open class CalendarModel {
         case full
     }
     public let year: Int
-    public var days: [Day] = []
-
 
     private let weekDays = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"]
     private let weekDaysSingle = ["L", "M", "X", "J", "V", "S", "D"]
     private let firstWeekDay: FirstWeekDay
     public let type: CalendarType
+
+    public var days: [Day] = []
     public var months: [Month] = []
+    public var weeks: [Week] = []
 
     public init(type: CalendarType = .calendar,
                 firstWeekDay: FirstWeekDay = .monday,
@@ -34,6 +35,7 @@ open class CalendarModel {
         }
         self.delegate = delegate
         self.months = self.getMonths()
+        self.weeks = self.getWeeks(of: self.year) ?? []
         self.days = self.getDays()
     }
 
@@ -73,9 +75,9 @@ open class CalendarModel {
         return months
     }
 
-    private func generateWeeks(ofYear year: Int) -> [Week]? {
+    private func getWeeks(of year: Int) -> [Week]? {
         var calendar = Calendar.current
-        calendar.firstWeekday = 2 // Definir el lunes como primer día de la semana (opcional)
+        calendar.firstWeekday = firstWeekDay.rawValue
 
         guard let startDate = calendar.date(from: DateComponents(year: year, month: 1, day: 1)),
               let endDate = calendar.date(from: DateComponents(year: year, month: 12, day: 31)) else {
@@ -90,19 +92,16 @@ open class CalendarModel {
             let day = Day(date: currentDate)
             currentWeekDays.append(day)
 
-            // Si hemos completado una semana (7 días) o si es el último día del año
             if currentWeekDays.count == 7 || calendar.isDate(currentDate, inSameDayAs: endDate) {
                 weeks.append(Week(days: currentWeekDays))
                 currentWeekDays = []
             }
 
-            // Avanzamos al siguiente día
             guard let nextDate = calendar.date(byAdding: .day, value: 1, to: currentDate) else {
                 break
             }
             currentDate = nextDate
         }
-
         return weeks
     }
 
